@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const httpStatus = require('http-status')
-require('dotenv').config({path: './config/.env'});
+//require('dotenv').config({path: './config/.env'});
+const dotenv  = require('dotenv')
+dotenv.config({path: './config/.env'});
 
 
 const mongoose =require("mongoose")
@@ -91,15 +93,12 @@ app.put('/users/', async(req, res) =>{
 app.delete('/users/:id', async (req, res) => {
   try {
     const id = req.params.id;
+    console.log(id)
 
-    const deletedUser = await User.findByIdAndDelete(id);
+    await User.findByIdAndDelete(id);
 
-    if (!deletedUser) {
-      return res.status(httpStatus.NOT_FOUND).json({ message: "User not found or already deleted" });
-    }
-
-    return res.status(httpStatus.OK).json({ message: "User deleted successfully", data: deletedUser });
+    return res.status(httpStatus.OK).json({ message: "User deleted successfully" });
   } catch (error) {
-    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Could not delete user", error: error });
+    return res.status(httpStatus.BAD_REQUEST).json({ message: "Could not delete user", error: error });
   }
 });
